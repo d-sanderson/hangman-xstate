@@ -4,77 +4,11 @@ import { useMachine } from '@xstate/react';
 import { CountContext, counterMachine } from './machines/counterMachine';
 import { useEffect, useState } from 'react';
 import { assign, createMachine } from 'xstate';
+import { hangmanMachine } from './machines/hangmanMachine';
 
 
 function App() {
-  interface HangmanContext {
-    word: string
-    guessedLetters: { correct: string, incorrect: string },
-    triesRemaining: number
-  }
 
-  const initialContext: HangmanContext = { word: '', guessedLetters: { correct: '', incorrect: '' }, triesRemaining: 1 }
-
-  const handleTries = (context, event) => {
-    if (!context.word.includes(event.letter)) {
-      return context.triesRemaining - 1
-    }
-    return context.triesRemaining
-  }
-  const handleGuess = (context, event) => {
-    const { correct, incorrect } = context.guessedLetters
-    const nextGuessedLetters = { correct, incorrect }
-
-    // CORRECT GUESS
-    if (context.word.includes(event.letter) && !context.guessedLetters.correct.includes(event.letter)) {
-      nextGuessedLetters.correct = context.guessedLetters.correct + event.letter
-    }
-
-    // INCORRECTGUESS
-    if (!context.word.includes(event.letter) && !context.guessedLetters.incorrect.includes(event.letter)) {
-      nextGuessedLetters.incorrect = context.guessedLetters.incorrect + event.letter
-    }
-    return nextGuessedLetters
-  }
-  const setWord = (_, event) => event.word
-
-  const hangmanMachine = createMachine({
-    context: initialContext,
-    schema: { context: {} as HangmanContext },
-    id: "counterMachine",
-    initial: "inactive",
-    states: {
-      inactive: {
-        on: {
-          INIT: {
-            target: 'active',
-            actions: assign({ word: setWord })
-          }
-        }
-      },
-      active: {
-        on: {
-          MAKEGUESS: {
-            // target: 'active',
-            actions: assign({ guessedLetters: handleGuess, triesRemaining: handleTries })
-          },
-          NOTRIESREMAINING: {
-            target: 'lose'
-          }
-        }
-      },
-      win: {
-      },
-      lose: {
-        on: {
-          RESET: { 
-            target: 'inactive',
-            actions: assign({ ...initialContext})
-          }
-        }
-      }
-    },
-  });
   const [state, send] = useMachine(hangmanMachine);
 
 
@@ -103,21 +37,51 @@ function App() {
     if (state.context.triesRemaining === 0) {
       send('NOTRIESREMAINING')
     }
-
   }, [state?.context.triesRemaining])
 
+  //  WIN STATE 
+  useEffect(() => {
+    const canSpellWord = (word, letters) => {
+      // Convert the word and letters to lowercase for easy comparison
+      const wordLower = word.toLowerCase();
+      const lettersLower = letters.toLowerCase();
+
+      // Loop through each letter in the word
+      for (const letter of wordLower) {
+        // If the current letter is not in the string of letters, return false
+        if (!lettersLower.includes(letter)) {
+          return false;
+        }
+      }
+      // If all the letters in the word are in the string of letters, return true
+      return true;
+    }
+
+    if (canSpellWord(state.context.word, state.context.guessedLetters.correct)) {
+      send('WINNERCHICKNDINNER')
+    }
+  }, [state?.context])
 
   return (
     <main className="App">
       <h1>{state.toStrings()}</h1>
       <h1>{JSON.stringify(state.context)}</h1>
-      <button onClick={() => {
-        send('MAKEGUESS', { letter: 'p' })
-      }}>test</button>
-      {state.matches('win') || state.matches('lose') && 
-      <button onClick={() => {
-        send('RESET')
-      }}>reset</button>}
+      {state.matches('active') && <input onKeyDown={(e) => {
+        console.log(e)
+        if (/^[a-zA-Z0-9_]{1}$/.test(e.key)) {
+          send('MAKEGUESS', { letter: e.key })
+        }
+      }} />}
+      {state.matches('lose') &&
+        <button onClick={() => {
+          send('RESET')
+        }}>reset</button>
+      }
+      {state.matches('win') &&
+        <button onClick={() => {
+          send('RESET')
+        }}>reset</button>
+      }
     </main>
   )
 }
