@@ -1,10 +1,9 @@
 
 import './App.css'
 import { useMachine } from '@xstate/react';
-import { CountContext, counterMachine } from './machines/counterMachine';
 import { useEffect, useState } from 'react';
-import { assign, createMachine } from 'xstate';
-import { hangmanMachine } from './machines/hangmanMachine';
+// @ts-ignore
+import { hangmanMachine } from './machines/hangmanMachine.js';
 
 
 function App() {
@@ -41,7 +40,7 @@ function App() {
 
   //  WIN STATE 
   useEffect(() => {
-    const canSpellWord = (word, letters) => {
+    const canSpellWord = (word: string, letters: string) => {
       // Convert the word and letters to lowercase for easy comparison
       const wordLower = word.toLowerCase();
       const lettersLower = letters.toLowerCase();
