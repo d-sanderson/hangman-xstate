@@ -16,7 +16,7 @@ const HangmanUI = () => {
     <div>
       <h1>{state.toStrings()}</h1>
       <pre>{JSON.stringify(state.context, null, 2)}</pre>
-      {state.matches(STATES.ACTIVE) &&
+      {state.matches('active') &&
         <input
           onKeyDown={(e) => handleInput(e)}
         />

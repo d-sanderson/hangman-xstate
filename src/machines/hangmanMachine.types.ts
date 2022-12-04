@@ -5,6 +5,7 @@ export interface HangmanContext {
   error: string | null
 }
 
+// USING THIS BREAKS XSTATE VISUALIZATION
 export enum STATES {
   INACTIVE = 'INACTIVE',
   ACTIVE = 'ACTIVE',
