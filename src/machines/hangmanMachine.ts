@@ -64,7 +64,7 @@ const canSpellWord = (word: string, letters: string) => {
 const handleHasWon = (ctx: HangmanContext) => canSpellWord(ctx.word, ctx.guessedLetters.correct)
 
 export const hangmanMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QAsCGA7KBbDBZVAxsgJbpgB0phALsQG5gDEEA9mZenSwNYUzUAlDKywB1FgCcIAbQAMAXUSgADi1jFabJSAAeiAEwAWAIzlZ+gMyHrAVgDsADgc2bshwBoQAT0Q2Ld8gc7O2M7AE5DMLDjG31jAF94zzRMHHR8IlIKKgJaBkYwCQlJcmUAG1RqADNJLHJ+IXQRcSk5RSQQVXVNdG09BCNTcytbR2dXD29EULCzCzDZADYbJyNrRf1E5IxsPEISdhp6JlwAQQBpAFEAcQBVS4BlB7btLo1iLQ7+w3DyCxtFsE7P9LM5ZDZPD4EIZAeQbGEHBFDHFFosYgkkiAUrt0vssuQjvkXh03j0+ohFlFyHErEE7IYHIDlpDfBszNF7LJzLFFtYtlidmkMgcKISmNJjO0VGp3p9QP1KbMaQzggymRCptCHIZyIt-g59DZkcZEWFgvzsUK8ewAO6kRgCR6XAAqxOl3Q+vS+iAcoTMy1kxnmjIBNmMLIQiwN5AWK30+gcFjc4TCFsFe0y7DKaiYjoeLrdnRlZO9CF9ASWriDCOWy3DmosRn9wVkYTiJjslkMadSGZF5CqqGIZQArhJc07XQpXsXPeSEP59ORwsjGSaolGNVDo2ba8YEcilpZEpj0CwIHBtJa+1kZx65bpEABaRYRp82GNRDdopa8qMOHscWFfEcjyMA71lL15UQZEI2WJdd2MfcDX8BxzEAq1M1FXJjggktoIQWJZiNFweUMf5Wy3VkHF1NEYWMQE4giRYMJvW1SDwudSzbGiNjsFxDQ3fjX01SkAiQ0EkP8VEflY3EsPIbNYHAklZwffoeN1fR+NieEwkBAEI0iJdZHmcFZEMcwGMbOTgPYQdhzHFT3Ug+ciLhQxSP0XkKLCKiEH3RZyEicj7E7X1jFbOwT3iIA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QAsCGA7KBbDBZVAxsgJbpgB0phALsQG5gDEEA9mZenSwNYUzUAlDKywB1FgCcIAbQAMAXUSgADi1jFabJSAAeiAEwAWAIzlZ+gMyGLAVhsB2IzaMA2ADQgAnohsAOG+TGshb25jYuAJyREfoAvrEeaJg46PhEpBRUBLQMjGASEpLkygA2qNQAZpJY5PxC6CLiUnKKSCCq6pro2noIRqbmVrYOTq4e3gjG9hFmFhGyhi5BvsZ2UfGJGNh4hCTsNPRMuACCANIAogDiAKrnAMp3LdodGsRabb0uweQW+r6yvgixhiFlBEXGiEMERmANBU0cQ18LhsGxASW2qV2GXIB1yTzaLy6PUQgN8Zj+DiCsmCVnBXkQLn0AVkXz+QMsc1kxlR6JSaT2FFxTGkxlaKjUr3eoF6pPJ-nsVJpUIhCBshns5C+hj80PMJmM3ISaK2fKx7AA7qRGAJ7ucACr48WdN7dD6IILA8iLWT2BUGlyhQEq+xLTXGAMhfyGfWGzbJHbpdglNRMG13e2O9oSoluyZcmbe30G8OBukTYbkOz6WQOFwB5zUlFG3kJgXkCqoYglACuElTtodCme2ZdxIQUJc5BD4UM+ns2tsEQcKt8+nIEWnNgivkBAf0AfiRvQLAgcG0LcxibAw+dUt0iAAtO56Qgn2ZqR-Px+HDyTa3sVkOTXgSI53r0s7BhYpguL4oT2FYfzmFMv7xpebZCjekqutKDLzOuFiwYYSJTEs+jGCqLhQZqFhcv8URkdWFgoRi-LYpa2FZreHG9AaVGDFBrg2D6EEvr6ASrqCtZ2I2cTNn+aHYsmsDAU6WFjrxAwcsYgnCfoKp2MyPohsC847pEzGmle7adj2faYTmOEIJEsj4YRxHGWRKoMeQljItWwKLKuCyHrEQA */
   createMachine({
   context: initialContext,
   schema: { context: {} as HangmanContext, events: {} as any },
@@ -80,12 +80,14 @@ export const hangmanMachine =
           {
             target: "active",
             actions: ACTIONS.SETWORD,
+            description: "word successfully retrieved and stored in context.",
           },
         ],
         onError: [
           {
             target: "failure",
             actions: ACTIONS.SETERROR,
+            description: "api request failed, error is stored to context.",
           },
         ],
       },
@@ -95,18 +97,19 @@ export const hangmanMachine =
         {
           target: "win",
           cond: GUARDS.HASWON,
-          description: "User has guessed the word",
+          description: "User has guessed the word.",
         },
         {
           target: "lose",
           cond: GUARDS.HASLOST,
-          description: "No tries remaining",
+          description: "User has no tries remaining.",
         },
       ],
       on: {
         MAKEGUESS: {
           cond: GUARDS.VALIDINPUT,
           actions: ACTIONS.HANDLEGUESS,
+          description: "User makes a guess, input is validated.",
         },
       },
     },
