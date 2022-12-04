@@ -65,15 +65,18 @@ createMachine({
   predictableActionArguments: true,
   states: {
     inactive: {
+      // @ts-ignore
       on: {
         INIT: {
           target: "active",
+          // @ts-ignore
           actions: assign({ word: setWord }),
         },
       },
     },
     active: {
       entry: assign({ hasWon: (ctx: HangmanContext, _) => handleHasWon(ctx)}),
+      // @ts-ignore
       on: {
         MAKEGUESS: {
           target: 'active',
