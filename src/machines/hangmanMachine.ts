@@ -15,11 +15,10 @@ import { assign, createMachine } from "xstate";
     }
     return context.triesRemaining
   }
+
   const handleGuess = (context: HangmanContext, event: { letter: string }) => {
     const { correct, incorrect } = context.guessedLetters
     const nextGuessedLetters = { correct, incorrect }
-
-
 
     // CORRECT GUESS
     if (context.word.includes(event.letter)
@@ -32,8 +31,10 @@ import { assign, createMachine } from "xstate";
       && !incorrect.includes(event.letter)) {
       nextGuessedLetters.incorrect = incorrect + event.letter
     }
+
     return nextGuessedLetters
   }
+
   const setWord = (_: HangmanContext, event: { word: string }) => event.word
 
   const canSpellWord = (word: string, letters: string) => {
@@ -53,6 +54,7 @@ import { assign, createMachine } from "xstate";
   }
 
   const handleHasWon = (ctx: HangmanContext) => canSpellWord(ctx.word, ctx.guessedLetters.correct)
+
   export const hangmanMachine = 
 /** @xstate-layout N4IgpgJg5mDOIC5QGMD2BXAdgFzAJwFkBDZACwEtMwA6Sk7cgNzAGIBJAOTYBUBtABgC6iUAAdUscg1SYRIAB6IALPwBM1AKyr+ADgBsAdgMaDOjUo0AaEAE9EARg0BOav372AzLtV69qpX4AvoHWaFi4hCQUVNT0TKwEAIIA0gCiAOIAqqkAyjkCwkgg4pLSskWKCHoeGtQGHgZqHk56Ju5K1nYIOupOBq0ahr5qfarBoRg4+MRklDRxzCwcAPLcAEpsuWupSZyc6QVyJVLkMnKVpjrUHqo69n41-h6enQ46StduBk5KTg2+qg04xAYSmkVmMQWrAA6pwOKk1gBhAASbERyQ4ABE4QjDkVjmVzso1JptPojCYzBZXgh7LpNA1+u9+HodPwNJ5gaCIjNojQAO6UFjbHKpPhCI4SE5nCoOXzUJTfewGe6qW41DwdWyIVQtOrtfx0346FVAkIgyY8qJzagAGwkrBFYrxYilhNl3R0LnqSiUDQs1XZWq6XnUGhugyU5I8Oi8HmC5swqAgcDk3Om1qoktKp3KoEqAFo9DSi1zLRmITQ6MgGMxs9K8wodaZXEp7jo2YZ+M9HDTni5VM17vdu7pu2XwhW+bEa-F6+784hWupdV57D9foGDDT7O9XM0WU4WrHuzUJ2DeTbBY2CbmiQglKo+3TqE5+N8WtVDNolOerZW7Qdec7w9Ol3GoXU9CccM33Zdx7GfPQ6iHPQRy8NkPHjBMgA */
 createMachine({
@@ -102,14 +104,8 @@ createMachine({
       on: {
         RESET: {
           target: "inactive",
-          actions: ['sayHello'],
         },
       },
     },
   },
-    actions: {
-      sayHello: () => {
-        console.log('Hello!');
-      }
-    }
 });
