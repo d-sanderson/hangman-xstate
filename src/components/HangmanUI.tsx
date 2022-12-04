@@ -12,7 +12,8 @@ const HangmanUI = () => {
   }
 
   return (
-    <div>      <h1>{state.toStrings()}</h1>
+    <div>
+      <h1>{state.toStrings()}</h1>
       <pre>{JSON.stringify(state.context, null, 2)}</pre>
       {state.matches('active') &&
         <input
