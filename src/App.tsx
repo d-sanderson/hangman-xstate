@@ -6,23 +6,19 @@ import { hangmanMachine } from './machines/hangmanMachine';
 
 
 function App() {
-
   const [state, send] = useMachine(hangmanMachine);
-
-
-  const getRandomWord = async () => {
-    const data = await (await fetch('https://random-word-api.herokuapp.com/word')).json()
-    setRetrievedWord(data[0])
-  }
-
   const [retrievedWord, setRetrievedWord] = useState();
 
   // Load Word 
   useEffect(() => {
+    const getRandomWord = async () => {
+      const data = await (await fetch('https://random-word-api.herokuapp.com/word')).json()
+      setRetrievedWord(data[0])
+    }
     getRandomWord()
   }, [state])
 
-  // Initialize to machine to active when word has been retrieved
+  // Initialize machine to active when word has been retrieved
   useEffect(() => {
     if (retrievedWord && state.matches('inactive')) {
       send('INIT', { word: retrievedWord })
@@ -36,7 +32,7 @@ function App() {
     }
   }, [state?.context.triesRemaining])
 
-  //  WIN STATE 
+  //  Win State
   useEffect(() => {
     if (state?.context.hasWon) {
       send('CORRECT')
@@ -48,10 +44,11 @@ function App() {
       send('MAKEGUESS', { letter: e.key })
     }
   }
+
   return (
     <main className="App">
       <h1>{state.toStrings()}</h1>
-      <h1>{JSON.stringify(state.context)}</h1>
+      <pre>{JSON.stringify(state.context, null, 2)}</pre>
       {state.matches('active') &&
         <input
           onKeyDown={(e) => handleInput(e)}
