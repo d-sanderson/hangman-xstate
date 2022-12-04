@@ -25,20 +25,6 @@ function App() {
     }
   }, [retrievedWord])
 
-  // Lose State
-  useEffect(() => {
-    if (state.context.triesRemaining === 0) {
-      send('NOTRIESREMAINING')
-    }
-  }, [state?.context.triesRemaining])
-
-  //  Win State
-  useEffect(() => {
-    if (state?.context.hasWon) {
-      send('CORRECT')
-    }
-  }, [state?.context.hasWon])
-
   const handleInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (/^[a-zA-Z0-9_]{1}$/.test(e.key)) {
       send('MAKEGUESS', { letter: e.key })
@@ -54,12 +40,7 @@ function App() {
           onKeyDown={(e) => handleInput(e)}
         />
       }
-      {state.matches('lose') &&
-        <button onClick={() => {
-          send('RESET')
-        }}>reset</button>
-      }
-      {state.matches('win') &&
+      {state.can('RESET') &&
         <button onClick={() => {
           send('RESET')
         }}>reset</button>
