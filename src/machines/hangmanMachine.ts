@@ -27,7 +27,7 @@ const handleGuess = (context: HangmanContext, event: { letter: string }) => {
 
   // CORRECT GUESS AND NOT ALREADY GUESSED
   if (context.word.includes(event.letter)
-    && !context.guessedLetters.correct.includes(event.letter)) {
+    && !correct.includes(event.letter)) {
     nextGuessedLetters.correct = correct + event.letter
   }
 
