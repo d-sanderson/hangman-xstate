@@ -61,16 +61,22 @@ function App() {
     }
   }, [state?.context])
 
+  const handleInput = (e) => {
+    if (/^[a-zA-Z0-9_]{1}$/.test(e.key)) {
+      send('MAKEGUESS', { letter: e.key })
+    }
+  }
+
   return (
     <main className="App">
       <h1>{state.toStrings()}</h1>
       <h1>{JSON.stringify(state.context)}</h1>
-      {state.matches('active') && <input onKeyDown={(e) => {
-        console.log(e)
-        if (/^[a-zA-Z0-9_]{1}$/.test(e.key)) {
-          send('MAKEGUESS', { letter: e.key })
-        }
-      }} />}
+      {state.matches('active') &&
+        <input
+          onKeyDown={(e) => handleInput(e)}
+          onTouchStart={(e) => handleInput(e)}
+        />
+      }
       {state.matches('lose') &&
         <button onClick={() => {
           send('RESET')
