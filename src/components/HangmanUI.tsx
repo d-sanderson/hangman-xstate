@@ -1,6 +1,7 @@
 import { useMachine } from '@xstate/react';
 import React from 'react'
 import { hangmanMachine } from '../machines/hangmanMachine';
+import { ACTIONS, STATES } from '../machines/hangmanMachine.types';
 
 const HangmanUI = () => {
   const [state, send] = useMachine(hangmanMachine);
@@ -15,14 +16,14 @@ const HangmanUI = () => {
     <div>
       <h1>{state.toStrings()}</h1>
       <pre>{JSON.stringify(state.context, null, 2)}</pre>
-      {state.matches('active') &&
+      {state.matches(STATES.ACTIVE) &&
         <input
           onKeyDown={(e) => handleInput(e)}
         />
       }
-      {state.can('RESET') &&
+      {state.can(ACTIONS.RESET) &&
         <button onClick={() => {
-          send('RESET')
+          send(ACTIONS.RESET)
         }}>reset</button>
       }</div>
   )

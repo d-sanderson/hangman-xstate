@@ -1,23 +1,5 @@
 import { assign, createMachine } from "xstate";
-
-interface HangmanContext {
-  word: string
-  guessedLetters: { correct: string, incorrect: string },
-  triesRemaining: number
-  error: string | null
-}
-
-enum ACTIONS {
-  SETWORD = 'SETWORD',
-  SETERROR = 'SETERROR',
-  HANDLEGUESS = 'HANDLEGUESS',
-  RESET = 'RESET',
-}
-
-enum GUARDS {
-  HASWON = "HASWON",
-  HASLOST = "HASLOST",
-}
+import { ACTIONS, GUARDS, HangmanContext, STATES } from "./hangmanMachine.types";
 
 const initialContext: HangmanContext = {
   word: '',
@@ -26,8 +8,9 @@ const initialContext: HangmanContext = {
   error: null,
 }
 
-const fetchRandomWord = async () => {
-  const data = await (await fetch('https://random-word-api.herokuapp.com/word')).json()
+const url = 'https://random-word-api.herokuapp.com/word'
+const fetchRandomWord = async (url: string) => {
+  const data = await (await fetch(url)).json()
   return data[0]
 }
 
@@ -42,7 +25,7 @@ const handleGuess = (context: HangmanContext, event: { letter: string }) => {
   const { correct, incorrect } = context.guessedLetters
   const nextGuessedLetters = { correct, incorrect }
 
-  // CORRECT GUESS
+  // CORRECT GUESS AND NOT ALREADY GUESSED
   if (context.word.includes(event.letter)
     && !context.guessedLetters.correct.includes(event.letter)) {
     nextGuessedLetters.correct = correct + event.letter
@@ -82,35 +65,35 @@ export const hangmanMachine =
     schema: { context: {} as HangmanContext, events: {} as any },
     predictableActionArguments: true,
     id: "hangmanMachine",
-    initial: "inactive",
+    initial: STATES.INACTIVE,
     states: {
-      inactive: {
+      [STATES.INACTIVE]: {
         invoke: {
-          src: () => fetchRandomWord(),
+          src: () => fetchRandomWord(url),
           id: "getRandomWord",
           onDone: [
             {
-              target: "active",
+              target: STATES.ACTIVE,
               actions: ACTIONS.SETWORD,
             },
           ],
           onError: [
             {
-              target: "failure",
+              target: STATES.FAILURE,
               actions: ACTIONS.SETERROR,
             },
           ],
         },
       },
-      active: {
+      [STATES.ACTIVE]: {
         always: [
           {
-            target: "win",
+            target: STATES.WIN,
             cond: GUARDS.HASWON,
             description: "User has guessed the word",
           },
           {
-            target: "lose",
+            target: STATES.LOSE,
             cond: GUARDS.HASLOST,
             description: "No tries remaining",
           },
@@ -121,27 +104,27 @@ export const hangmanMachine =
           },
         },
       },
-      win: {
+      [STATES.WIN]: {
         on: {
           RESET: {
-            target: "inactive",
-            actions: "RESET",
+            target: [STATES.INACTIVE],
+            actions: ACTIONS.RESET,
           },
         },
       },
-      lose: {
+      [STATES.LOSE]: {
         on: {
           RESET: {
-            target: "inactive",
-            actions: "RESET",
+            target: [STATES.INACTIVE],
+            actions: ACTIONS.RESET,
           },
         },
       },
-      failure: {
+      [STATES.FAILURE]: {
         on: {
           RESET: {
-            target: "inactive",
-            actions: "RESET",
+            target: [STATES.INACTIVE],
+            actions: ACTIONS.RESET,
           },
         },
       },
