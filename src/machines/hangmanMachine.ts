@@ -10,7 +10,8 @@ interface HangmanContext {
 enum ACTIONS {
   SETWORD = 'SETWORD',
   HANDLEGUESS = 'HANDLEGUESS',
-  RESET = 'RESET'
+  RESET = 'RESET',
+  CHECKHASWON = 'CHECKHASWON'
 }
 
 const initialContext: HangmanContext = {
@@ -84,7 +85,7 @@ export const hangmanMachine =
         },
       },
       active: {
-        entry: assign({ hasWon: (ctx: HangmanContext, _) => handleHasWon(ctx) }),
+        entry: [ACTIONS.CHECKHASWON],
         on: {
           MAKEGUESS: {
             target: 'active',
@@ -116,16 +117,13 @@ export const hangmanMachine =
       },
     },
   }, {
-    // TODO: fix TS Errors
     actions: {
+      [ACTIONS.SETWORD]: assign({ word: (context: HangmanContext, event) => setWord(context, event) }),
       [ACTIONS.HANDLEGUESS]: assign({
-        // @ts-ignore
-        guessedLetters: handleGuess,
-        // @ts-ignore
-        triesRemaining: handleTries,
+        guessedLetters: (context: HangmanContext, event) => handleGuess(context, event),
+        triesRemaining: (context: HangmanContext, event) => handleTries(context, event),
       }),
-      // @ts-ignore
-      [ACTIONS.SETWORD]: assign({ word: setWord }),
       [ACTIONS.RESET]: assign({ ...initialContext }),
+      [ACTIONS.CHECKHASWON]: assign({ hasWon: (ctx: HangmanContext, _) => handleHasWon(ctx)}),
   }
 })
