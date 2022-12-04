@@ -64,7 +64,7 @@ const canSpellWord = (word: string, letters: string) => {
 const handleHasWon = (ctx: HangmanContext) => canSpellWord(ctx.word, ctx.guessedLetters.correct)
 
 export const hangmanMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QAsCGA7KBbDBZVAxsgJbpgB0phALsQG5gDEEA9mZenSwNYUzUAlDKywB1FgCcIAbQAMAXUSgADi1jFabJSAAeiAEwAWAIzlZ+gMyGLATkM2LsgOzGArPoA0IAJ6JXFp3IADicnfX1XewtjfSDXAF94rzRMHHR8IlIKKgJaBkYwCQlJcmUAG1RqADNJLHJ+IXQRcSk5RSQQVXVNdG09BCNTcytbKOc3Tx9EYycbM1tZADZDOMWAxctE5IxsPEISdhp6JlwAQQBpAFEAcQBVS4BlB7btLo1iLQ7+w1nyC1dFkFjCEgotjP9-F5fAhDItAq4bEFEU4wTYHPpjFsQCldul9llyEd8i8Om8en1EGtTHZZhsbKFZACoX4NmYbG5ZrJDEsbBssTi0hkDhQiUxpMZ2io1O9PqB+lTyDTefp6U5GYtmTCgoZyGtXEELHCVi4nBZ+TtBfj2AB3UiMASPS4AFRJUu6H16X0QTns5FmdjijIsVhCmsB+kVjKC+kWYNcPqM5tSe0y7DKaiYDoeztdnWl5K9CB9c39K1cQZDTk1FiMZjhTkixlkMy5hiTuKFBKqqGIZQArhJM46XQpXvmPRSEAEI7NrE4gdEYvoUZro4qUQDbDGAezFokkiB0CwIHBtAKU8Kx+7ZbpEABaDVTBB31yKtFo2NN2MrWQ2duW1NsnQUUrxlT05UQQxJmhRZ3HXMFlnCSIIicf8LwJEDSXHG9vhsV92ViGJTV-IJo01AEgl1ONzCbNUgjQvFAPIW1wLza9WP6UFTENfRzCWX8fQ2MN6XIYwYgsbUAl5WCGM7NMM1AgsIIQLi-g2PjFgE2FoMgmwI1kBYa2MbluWMhID3PRjhXIbtewHMBFInQt7HwmIgWXRxETIp9jF5ch7DnRF9VkUF6X3eIgA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QAsCGA7KBbDBZVAxsgJbpgB0phALsQG5gDEEA9mZenSwNYUzUAlDKywB1FgCcIAbQAMAXUSgADi1jFabJSAAeiAEwAWAIzlZ+gMyHrAVgDsADgc2bshwBoQAT0Q2Ld8gc7O2M7AE5DMLDjG31jAF94zzRMHHR8IlIKKgJaBkYwCQlJcmUAG1RqADNJLHJ+IXQRcSk5RSQQVXVNdG09BCNTcytbR2dXD29EULCzCzDZADYbJyNrRf1E5IxsPEISdhp6JlwAQQBpAFEAcQBVS4BlB7btLo1iLQ7+w3DyCxtFsE7P9LM5ZDZPD4EIZAeQbGEHBFDHFFosYgkkiAUrt0vssuQjvkXh03j0+ohFlFyHErEE7IYHIDlpDfBszNF7LJzLFFtYtlidmkMgcKISmNJjO0VGp3p9QP1KbMaQzggymRCptCHIZyIt-g59DZkcZEWFgvzsUK8ewAO6kRgCR6XAAqxOl3Q+vS+iAcoTMy1kxnmjIBNmMLIQiwN5AWK30+gcFjc4TCFsFe0y7DKaiYjoeLrdnRlZO9CF9ASWriDCOWy3DmosRn9wVkYTiJjslkMadSGZF5CqqGIZQArhJc07XQpXsXPeSEP59ORwsjGSaolGNVDo2ba8YEcilpZEpj0CwIHBtJa+1kZx65bpEABaRYRp82GNRDdopa8qMOHscWFfEcjyMA71lL15UQZEI2WJdd2MfcDX8BxzEAq1M1FXJjggktoIQWJZiNFweUMf5Wy3VkHF1NEYWMQE4giRYMJvW1SDwudSzbGiNjsFxDQ3fjX01SkAiQ0EkP8VEflY3EsPIbNYHAklZwffoeN1fR+NieEwkBAEI0iJdZHmcFZEMcwGMbOTgPYQdhzHFT3Ug+ciLhQxSP0XkKLCKiEH3RZyEicj7E7X1jFbOwT3iIA */
   createMachine({
   context: initialContext,
   schema: { context: {} as HangmanContext, events: {} as any },
@@ -105,6 +105,7 @@ export const hangmanMachine =
       ],
       on: {
         MAKEGUESS: {
+          cond: GUARDS.VALIDINPUT,
           actions: ACTIONS.HANDLEGUESS,
         },
       },
@@ -138,6 +139,7 @@ export const hangmanMachine =
     guards: {
       [GUARDS.HASLOST]: (ctx) => ctx.triesRemaining === 0,
       [GUARDS.HASWON]: handleHasWon,
+      [GUARDS.VALIDINPUT]: (_, event) => /^[a-zA-Z]{1}$/.test(event.letter)
     },
     actions: {
       [ACTIONS.SETWORD]: assign({ word: (_, event) => event.data }),

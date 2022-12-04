@@ -24,4 +24,5 @@ export enum ACTIONS {
 export enum GUARDS {
   HASWON = "HASWON",
   HASLOST = "HASLOST",
+  VALIDINPUT = "VALIDINPUT",
 }

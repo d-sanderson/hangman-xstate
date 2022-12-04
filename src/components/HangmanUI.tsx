@@ -6,11 +6,7 @@ import { ACTIONS, STATES } from '../machines/hangmanMachine.types';
 const HangmanUI = () => {
   const [state, send] = useMachine(hangmanMachine, { devTools: true })
   const active = state.matches('active')
-  const handleInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (/^[a-zA-Z0-9_]{1}$/.test(e.key)) {
-      send('MAKEGUESS', { letter: e.key })
-    }
-  }
+  const handleInput = (e: React.KeyboardEvent<HTMLInputElement>) => send('MAKEGUESS', { letter: e.key })
 
   return (
     <div>
