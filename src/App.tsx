@@ -40,33 +40,16 @@ function App() {
 
   //  WIN STATE 
   useEffect(() => {
-    const canSpellWord = (word: string, letters: string) => {
-      // Convert the word and letters to lowercase for easy comparison
-      const wordLower = word.toLowerCase();
-      const lettersLower = letters.toLowerCase();
-
-      // Loop through each letter in the word
-      for (const letter of wordLower) {
-        // If the current letter is not in the string of letters, return false
-        if (!lettersLower.includes(letter)) {
-          return false;
-        }
-      }
-      // If all the letters in the word are in the string of letters, return true
-      return true;
+    if (state?.context.hasWon) {
+      send('CORRECT')
     }
-
-    if (canSpellWord(state.context.word, state.context.guessedLetters.correct)) {
-      send('WINNERCHICKNDINNER')
-    }
-  }, [state?.context])
+  }, [state?.context.hasWon])
 
   const handleInput = (e) => {
     if (/^[a-zA-Z0-9_]{1}$/.test(e.key)) {
       send('MAKEGUESS', { letter: e.key })
     }
   }
-
   return (
     <main className="App">
       <h1>{state.toStrings()}</h1>
@@ -74,7 +57,6 @@ function App() {
       {state.matches('active') &&
         <input
           onKeyDown={(e) => handleInput(e)}
-          onTouchStart={(e) => handleInput(e)}
         />
       }
       {state.matches('lose') &&
