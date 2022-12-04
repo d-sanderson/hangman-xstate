@@ -28,7 +28,7 @@ const initialContext: HangmanContext = {
 
 const fetchRandomWord = async () => {
   const data = await (await fetch('https://random-word-api.herokuapp.com/word')).json()
- return data[0]
+  return data[0]
 }
 
 const handleTries = (context: HangmanContext, event: { letter: string }) => {
@@ -76,82 +76,81 @@ const canSpellWord = (word: string, letters: string) => {
 const handleHasWon = (ctx: HangmanContext) => canSpellWord(ctx.word, ctx.guessedLetters.correct)
 
 export const hangmanMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QAsCGA7KBbDBZVAxsgJbpgB0phALsQG5gDEEA9mZenSwNYUzUAlDKywB1FgCcIAbQAMAXUSgADi1jFabJSAAeiAKwBmAOzlZhgJwBGAGzmbxgEz6ALDYA0IAJ6IAHI-ILYxt9O2MXKwsbBwBfGM80TBx0fCJSCioCWgZGMAkJSXJlABtUagAzSSxyfiF0EXEpOUUkEFV1TXRtPQQLfQtyS31fKONZWV9DV08fBEjZQYcrcNCXcasXOISMbDxCEnYaeiZcAEEAaQBRAHEAVUuAZQfm7XaNYi1WnpdHGcRbAZrQw2RwmCyyKyGYH6LYgRK7FL7dLkI45AByAHkACoCACSjwElzOuLRJOuL1ab063UQjlkLnI-SsG3GLmC1lkHm8tOMhnIjkcxkm-hc+lk+iFsPhyVSBwoqKYogxAgAIndHg9LiqKSo1O9PqAenSGUyWfT2VZOX8EMCBtFBTZLKKooYXIYpTsZUjDlljowdW09dSvrT6YzrGa2TYOVzZoZQeRo5DfKExoKNh6kns0j7skxpFYWrqOh8uiGEMbw8y1uak1buRXBfzQmLosZIu3HJt4nDPdm5eQAO6kRiEzVYgNU0s0hBGUzmax2YFOVyxxCGTnkDbAn6ggXR3yZhGy5HFNRMMeXCcKV5B6fludmSy2ewrtzWukDMa+YwSrs2UUQSPL0cwocpUGIYoAFcJAvR4r0nO8DV0f4JgCExgl8S12wsSZrQsBkNzccFDEmekISsOIe3QFgIDgbRpX7dJbxLZCegAWjXBBOLMcYIWMYJPxsXxzGApj2EyPMWP1MtDUQYxwUGJwo0haN6V8a1sLMKx-EcCxHAceN0zExFQJRX0GGk4M5NnXxGX0foRIM9TZAUlwPzGcg3BsbCgktAighMk92GHWTA1YsLvmWeyLAsDdXFcZkuPjOzhJZVxJl5YIYR7RjTIHM9YDAKz7xsiJTAc2L4tFCJbA-eN+TcfQdLGWxowsILvTAiDoNgkq2P+OkrDMXwUzGkEBMiTTnC3XklzbFxwWGKiYiAA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QAsCGA7KBbDBZVAxsgJbpgB0phALsQG5gDEEA9mZenSwNYUzUAlDKywB1FgCcIAbQAMAXUSgADi1jFabJSAAeiAEwAWAIzlZ+gMwmLNgJwB2e7YBsAGhABPRAFYL98gAcjsbOAd7O9sYW+rYAvrHuaJg46PhEpBRUBLQMjGASEpLkygA2qNQAZpJY5PxC6CLiUnKKSCCq6pro2noIRqbmVlF2ji7uXgjGTmYWtrL2hhbehrb6+t7e8YkY2HiEJOw09Ey4AIIA0gCiAOIAqpcAyg8t2h0axFptvYbTSxGyziMziWARC40Qhgi5G8tgCthBFmctm8sg2WxASV2qX2GXIR1yLzaby6PUQwNMth+YRMsimyPs4IQ4X0ZlsIVk83mkXs6MxKTSBwo+KY0mMrRUanen1AvXJ5Ep9mpxlpTm8DM8EIChnIwO8cMMPwiax5CQxO35OPYAHdSIwBI9LgAVQkSzofbpfRALFnObzK4wBPzI8IWRmhFlzPUAuHOCIrXnmvbpdglNRMe0PJ0u9qSkmehDenV+2mB1UhxnRbUA+yhGyx5yGWQBBPJJOC8gVVDEEoAVwk6YdzoUr1z7tJCER3h1hij82RFmMbNDGoQAQjNfClOMi3MLnipvQLAgcG0fLbGRHbulukQAFo3Cv72YObI-AFA75hoYW1iBbisjkYCXlKHoyhC+hht467OMqVihNuFg-hayZCtkxzAXmYEICsU5svoSL2L4+ghGqjLhAEOowQaXKEfYtJIee1qkBhY75gEMHkIii6WIGqLIsYYYOOQxjGP0FhhO+tLOAx2IoeQqawEBRKjtevTsaYXGrOJFh8X6jIrCyr5suYTaNoizammesntp23Z9kprogeOOHyqJBFESR6oTIuzjkCsiyGEYYShC4cT7kAA */
   createMachine<HangmanContext, any>({
-  context: initialContext,
-  schema: { context: {} as HangmanContext, events: {} as any },
-  predictableActionArguments: true,
-  id: "hangmanMachine",
-  initial: "inactive",
-  states: {
-    inactive: {
-      invoke: {
-        src: () => fetchRandomWord(),
-        id: "getRandomWord",
-        onDone: [
+    context: initialContext,
+    schema: { context: {} as HangmanContext, events: {} as any },
+    predictableActionArguments: true,
+    id: "hangmanMachine",
+    initial: "inactive",
+    states: {
+      inactive: {
+        invoke: {
+          src: () => fetchRandomWord(),
+          id: "getRandomWord",
+          onDone: [
+            {
+              target: "active",
+              actions: ACTIONS.SETWORD,
+            },
+          ],
+          onError: [
+            {
+              target: "failure",
+              actions: ACTIONS.SETERROR,
+            },
+          ],
+        },
+      },
+      active: {
+        always: [
           {
-            target: "active",
-            actions: ACTIONS.SETWORD,
+            target: "win",
+            cond: GUARDS.HASWON,
+            description: "User has guessed the word",
+          },
+          {
+            target: "lose",
+            cond: GUARDS.HASLOST,
+            description: "No tries remaining",
           },
         ],
-        onError: [
-          {
-            target: "failure",
-            actions: ACTIONS.SETERROR,
+        on: {
+          MAKEGUESS: {
+            actions: ACTIONS.HANDLEGUESS,
           },
-        ],
-      },
-    },
-    active: {
-      always: [
-        {
-          target: "win",
-          description: 'User has guessed the word',
-          cond: GUARDS.HASWON,
-        },
-        {
-          target: "lose",
-          description: 'No tries remaining',
-          cond: GUARDS.HASLOST,
-        },
-      ],
-      on: {
-        MAKEGUESS: {
-          target: "active",
-          actions: ACTIONS.HANDLEGUESS,
         },
       },
-    },
-    win: {
-      on: {
-        RESET: {
-          target: "inactive",
-          actions: "RESET",
+      win: {
+        on: {
+          RESET: {
+            target: "inactive",
+            actions: "RESET",
+          },
+        },
+      },
+      lose: {
+        on: {
+          RESET: {
+            target: "inactive",
+            actions: "RESET",
+          },
+        },
+      },
+      failure: {
+        on: {
+          RESET: {
+            target: "inactive",
+            actions: "RESET",
+          },
         },
       },
     },
-    lose: {
-      on: {
-        RESET: {
-          target: "inactive",
-          actions: "RESET",
-        },
-      },
+  }, {
+    guards: {
+      [GUARDS.HASLOST]: (ctx) => ctx.triesRemaining === 0,
+      [GUARDS.HASWON]: handleHasWon,
     },
-    failure: {
-      on: {
-        RESET: {
-          target: "inactive",
-          actions: "RESET",
-        },
-      },
-    },
-  },
-}, {
-  guards: {
-    [GUARDS.HASLOST]: (ctx) => ctx.triesRemaining === 0,
-    [GUARDS.HASWON]: handleHasWon,
-  },
     actions: {
       [ACTIONS.SETWORD]: assign({ word: (_, event) => event.data }),
       [ACTIONS.SETERROR]: assign({ error: (_, event) => event.data }),
@@ -160,5 +159,5 @@ export const hangmanMachine =
         triesRemaining: (context: HangmanContext, event) => handleTries(context, event),
       }),
       [ACTIONS.RESET]: assign({ ...initialContext }),
-  }
-})
+    }
+  })
