@@ -10,6 +10,7 @@ interface HangmanContext {
 enum ACTIONS {
   SETWORD = 'SETWORD',
   HANDLEGUESS = 'HANDLEGUESS',
+  RESET = 'RESET'
 }
 
 const initialContext: HangmanContext = {
@@ -101,7 +102,7 @@ export const hangmanMachine =
         on: {
           RESET: {
             target: "inactive",
-            actions: assign({ ...initialContext }),
+            actions: ['RESET'],
           },
         },
       },
@@ -109,6 +110,7 @@ export const hangmanMachine =
         on: {
           RESET: {
             target: "inactive",
+            actions: ['RESET']
           },
         },
       },
@@ -124,5 +126,6 @@ export const hangmanMachine =
       }),
       // @ts-ignore
       [ACTIONS.SETWORD]: assign({ word: setWord }),
+      [ACTIONS.RESET]: assign({ ...initialContext }),
   }
 })
