@@ -4,15 +4,14 @@ interface HangmanContext {
   word: string
   guessedLetters: { correct: string, incorrect: string },
   triesRemaining: number
-  hasWon: boolean
   error: string | null
 }
 
 enum ACTIONS {
   SETWORD = 'SETWORD',
+  SETERROR = 'SETERROR',
   HANDLEGUESS = 'HANDLEGUESS',
   RESET = 'RESET',
-  CHECKHASWON = 'CHECKHASWON'
 }
 
 enum GUARDS {
@@ -24,7 +23,6 @@ const initialContext: HangmanContext = {
   word: '',
   guessedLetters: { correct: '', incorrect: '' },
   triesRemaining: 7,
-  hasWon: false,
   error: null,
 }
 
@@ -58,8 +56,6 @@ const handleGuess = (context: HangmanContext, event: { letter: string }) => {
 
   return nextGuessedLetters
 }
-
-const setWord = (_: HangmanContext, event: { word: string }) => event.word
 
 const canSpellWord = (word: string, letters: string) => {
   // Convert the word and letters to lowercase for easy comparison
@@ -95,13 +91,13 @@ export const hangmanMachine =
         onDone: [
           {
             target: "active",
-            actions: assign({ word: (ctx, event) => event.data }),
+            actions: ACTIONS.SETWORD,
           },
         ],
         onError: [
           {
             target: "failure",
-            actions: assign({ error: (context, event) => event.data }),
+            actions: ACTIONS.SETERROR,
           },
         ],
       },
@@ -110,10 +106,12 @@ export const hangmanMachine =
       always: [
         {
           target: "win",
+          description: 'User has guessed the word',
           cond: GUARDS.HASWON,
         },
         {
           target: "lose",
+          description: 'No tries remaining',
           cond: GUARDS.HASLOST,
         },
       ],
@@ -121,13 +119,6 @@ export const hangmanMachine =
         MAKEGUESS: {
           target: "active",
           actions: ACTIONS.HANDLEGUESS,
-          internal: false,
-        },
-        NOTRIESREMAINING: {
-          target: "lose",
-        },
-        WORDGUESSED: {
-          target: "win",
         },
       },
     },
@@ -162,12 +153,12 @@ export const hangmanMachine =
     [GUARDS.HASWON]: handleHasWon,
   },
     actions: {
-      [ACTIONS.SETWORD]: assign({ word: (context: HangmanContext, event) => setWord(context, event) }),
+      [ACTIONS.SETWORD]: assign({ word: (_, event) => event.data }),
+      [ACTIONS.SETERROR]: assign({ error: (_, event) => event.data }),
       [ACTIONS.HANDLEGUESS]: assign({
         guessedLetters: (context: HangmanContext, event) => handleGuess(context, event),
         triesRemaining: (context: HangmanContext, event) => handleTries(context, event),
       }),
-      [ACTIONS.CHECKHASWON]: assign({ hasWon: (ctx: HangmanContext, _) => handleHasWon(ctx)}),
       [ACTIONS.RESET]: assign({ ...initialContext }),
   }
 })
