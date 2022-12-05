@@ -1,17 +1,16 @@
-import Spline from '@splinetool/react-spline';
 import { useMachine } from '@xstate/react';
 import React, { useEffect, useRef } from 'react'
 import { hangmanMachine } from '../machines/hangmanMachine';
 import { ACTIONS } from '../machines/hangmanMachine.types';
+
+const Spline = React.lazy(() => import('@splinetool/react-spline'));
+
 const HangmanUI = () => {
   const [state, send, service] = useMachine(hangmanMachine, { devTools: true })
   const active = state.matches('active')
   const handleInput = (e: React.KeyboardEvent<HTMLInputElement>) => send('MAKEGUESS', { letter: e.key })
 
-
-
   // initialize Refs
-  const all = useRef()
   const post = useRef()
   const head = useRef()
   const torso = useRef()
@@ -115,7 +114,6 @@ const HangmanUI = () => {
     }
     if (state.matches('inactive')) {
       // @ts-ignore
-
       winText?.current?.emitEventReverse('mouseDown')
       // @ts-ignore
       loseText?.current?.emitEventReverse('mouseDown')
