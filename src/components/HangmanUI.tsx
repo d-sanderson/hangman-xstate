@@ -4,13 +4,14 @@ import React, { useEffect, useRef } from 'react'
 import { hangmanMachine } from '../machines/hangmanMachine';
 import { ACTIONS } from '../machines/hangmanMachine.types';
 const HangmanUI = () => {
-  const [state, send] = useMachine(hangmanMachine, { devTools: true })
+  const [state, send, service] = useMachine(hangmanMachine, { devTools: true })
   const active = state.matches('active')
   const handleInput = (e: React.KeyboardEvent<HTMLInputElement>) => send('MAKEGUESS', { letter: e.key })
 
 
+
   // initialize Refs
-  const everything = useRef()
+  const all = useRef()
   const post = useRef()
   const head = useRef()
   const torso = useRef()
@@ -18,10 +19,13 @@ const HangmanUI = () => {
   const rightArm = useRef()
   const leftLeg = useRef()
   const rightLeg = useRef()
+  const winText = useRef()
+  const loseText = useRef()
+
+  const person = useRef()
 
   // @ts-ignore
   function onLoad(spline) {
-    const everythingObj = spline.findObjectById('f79b69ae-de81-4d5f-a1e9-6501f25519a7')
     const postObj = spline.findObjectById('8b383c81-04af-4020-adb7-1536919524df')
     const headObj = spline.findObjectById('197824f6-116e-4719-a466-fbfdd4fe138e')
     const torsoObj = spline.findObjectById('8571f3da-57da-4c40-8229-a43b95595db1')
@@ -29,8 +33,11 @@ const HangmanUI = () => {
     const rightArmObj = spline.findObjectById('24dfd042-2286-454b-8b7b-93af446c12c6')
     const leftLegObj = spline.findObjectById('61a2dbe9-090e-4084-a0a5-5e9d0fc5bd91')
     const rightLegObj = spline.findObjectById('d1016e3c-4ebd-4163-9434-e4752d97f080')
+    const winTextObj = spline.findObjectById('97d84d3a-a0d1-4553-8205-2e8853d53e71')
+    const loseTextObj = spline.findObjectById('36c51c12-45e7-47c1-b974-22eeadf6ae79')
+    const personObj = spline.findObjectById('25b26288-d556-484e-855a-efa5049f3c69')
+
     // save objects to refs for later use
-    everything.current = everythingObj
     post.current = postObj
     head.current = headObj
     torso.current = torsoObj
@@ -38,13 +45,14 @@ const HangmanUI = () => {
     rightArm.current = rightArmObj
     leftLeg.current = leftLegObj
     rightLeg.current = rightLegObj
+    winText.current = winTextObj
+    loseText.current = loseTextObj
+    person.current = personObj
   }
 
   useEffect(() => {
     switch (state.context.triesRemaining) {
-      case 7:
-        // @ts-ignore
-        everything?.current?.emitEventReverse('mouseDown')
+      case 7:{
         // @ts-ignore
         post?.current?.emitEventReverse('mouseDown')
         // @ts-ignore
@@ -59,6 +67,8 @@ const HangmanUI = () => {
         leftLeg?.current?.emitEventReverse('mouseDown')
         // @ts-ignore
         rightLeg?.current?.emitEventReverse('mouseDown')
+        // @ts-ignore
+      }
       case 6:
         // @ts-ignore
         post?.current?.emitEvent('mouseDown')
@@ -83,16 +93,30 @@ const HangmanUI = () => {
         // @ts-ignore
         leftLeg.current.emitEvent('mouseDown')
         break;
-      case 0:{
+      default:
+      case 0: {
         // @ts-ignore
         rightLeg.current.emitEvent('mouseDown');
         // @ts-ignore
-        everything.current.emitEvent('mouseDown');
       }
         break;
     }
   }, [state.context.triesRemaining])
 
+
+  service.onTransition(state => {
+    if(state.matches('lose')) {
+      loseText?.current?.emitEvent('mouseDown')
+    }
+    if(state.matches('win')) {
+      winText?.current?.emitEvent('mouseDown')
+    }
+    if(state.matches('inactive')) {
+      winText?.current?.emitEventReverse('mouseDown')
+      loseText?.current?.emitEventReverse('mouseDown')
+
+    }
+  })
   return (
     <div>
       <div className="preferably-square">
