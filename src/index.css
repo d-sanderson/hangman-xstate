@@ -32,6 +32,18 @@ body {
   min-height: 100vh;
 }
 
+.container {
+  height: 400px;
+  width: 100%;
+  min-width: 600px;
+}
+
+
+.preferably-square {
+  width: 300px;
+  aspect-ratio: auto 1 / 1; 
+}
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
