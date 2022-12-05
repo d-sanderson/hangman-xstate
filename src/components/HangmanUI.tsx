@@ -11,13 +11,13 @@ const HangmanUI = () => {
   const handleInput = (e: React.KeyboardEvent<HTMLInputElement>) => send('MAKEGUESS', { letter: e.key })
   return (
     <div>
+      <h1>{state.toStrings()}</h1>
       <SplineScene state={state} service={service} />
       {active &&
         <input
           onKeyDown={(e) => handleInput(e)}
         />
       }
-      <h1>{state.toStrings()}</h1>
       {state.matches('lose') &&
         <p>the correct word was <strong>{state.context.word}</strong>.</p>
       }
@@ -26,11 +26,12 @@ const HangmanUI = () => {
           send(ACTIONS.RESET)
         }}>reset</button>
       }
-      <h1>{state.context.word
-        .split('')
-        .map(el => state.context.guessedLetters.correct.includes(el) ? ` ${el} ` : ' _ ')
-        .join('')}
-      </h1>
+      {!state.matches('lose') &&
+        <h1>{state.context.word
+          .split('')
+          .map(el => state.context.guessedLetters.correct.includes(el) ? ` ${el} ` : ' _ ')
+          .join('')}
+        </h1>}
     </div>
   )
 }
