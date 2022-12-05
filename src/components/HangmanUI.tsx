@@ -10,6 +10,7 @@ const HangmanUI = () => {
 
 
   // initialize Refs
+  const everything = useRef()
   const post = useRef()
   const head = useRef()
   const torso = useRef()
@@ -20,6 +21,7 @@ const HangmanUI = () => {
 
   // @ts-ignore
   function onLoad(spline) {
+    const everythingObj = spline.findObjectById('f79b69ae-de81-4d5f-a1e9-6501f25519a7')
     const postObj = spline.findObjectById('8b383c81-04af-4020-adb7-1536919524df')
     const headObj = spline.findObjectById('197824f6-116e-4719-a466-fbfdd4fe138e')
     const torsoObj = spline.findObjectById('8571f3da-57da-4c40-8229-a43b95595db1')
@@ -28,6 +30,7 @@ const HangmanUI = () => {
     const leftLegObj = spline.findObjectById('61a2dbe9-090e-4084-a0a5-5e9d0fc5bd91')
     const rightLegObj = spline.findObjectById('d1016e3c-4ebd-4163-9434-e4752d97f080')
     // save objects to refs for later use
+    everything.current = everythingObj
     post.current = postObj
     head.current = headObj
     torso.current = torsoObj
@@ -40,6 +43,8 @@ const HangmanUI = () => {
   useEffect(() => {
     switch (state.context.triesRemaining) {
       case 7:
+        // @ts-ignore
+        everything?.current?.emitEventReverse('mouseDown')
         // @ts-ignore
         post?.current?.emitEventReverse('mouseDown')
         // @ts-ignore
@@ -78,9 +83,12 @@ const HangmanUI = () => {
         // @ts-ignore
         leftLeg.current.emitEvent('mouseDown')
         break;
-      case 0:
+      case 0:{
         // @ts-ignore
-        rightLeg.current.emitEvent('mouseDown')
+        rightLeg.current.emitEvent('mouseDown');
+        // @ts-ignore
+        everything.current.emitEvent('mouseDown');
+      }
         break;
     }
   }, [state.context.triesRemaining])
