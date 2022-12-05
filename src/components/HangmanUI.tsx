@@ -52,7 +52,7 @@ const HangmanUI = () => {
 
   useEffect(() => {
     switch (state.context.triesRemaining) {
-      case 7:{
+      case 7: {
         // @ts-ignore
         post?.current?.emitEventReverse('mouseDown')
         // @ts-ignore
@@ -105,14 +105,19 @@ const HangmanUI = () => {
 
 
   service.onTransition(state => {
-    if(state.matches('lose')) {
+    if (state.matches('lose')) {
+      // @ts-ignore
       loseText?.current?.emitEvent('mouseDown')
     }
-    if(state.matches('win')) {
+    if (state.matches('win')) {
+      // @ts-ignore
       winText?.current?.emitEvent('mouseDown')
     }
-    if(state.matches('inactive')) {
+    if (state.matches('inactive')) {
+      // @ts-ignore
+
       winText?.current?.emitEventReverse('mouseDown')
+      // @ts-ignore
       loseText?.current?.emitEventReverse('mouseDown')
 
     }
