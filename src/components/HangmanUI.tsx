@@ -1,5 +1,5 @@
 import { useMachine } from '@xstate/react';
-import React, { useEffect, useRef } from 'react'
+import React from 'react'
 import { hangmanMachine } from '../machines/hangmanMachine';
 import { ACTIONS } from '../machines/hangmanMachine.types';
 import SplineScene from './SplineScene';
@@ -7,13 +7,12 @@ import SplineScene from './SplineScene';
 
 const HangmanUI = () => {
   const [state, send, service] = useMachine(hangmanMachine, { devTools: true })
-  const active = state.matches('active')
   const handleInput = (e: React.KeyboardEvent<HTMLInputElement>) => send('MAKEGUESS', { letter: e.key })
   return (
     <div>
       <h1>{state.toStrings()}</h1>
       <SplineScene state={state} service={service} />
-      {active &&
+      {state.matches('active') &&
         <input
           onKeyDown={(e) => handleInput(e)}
         />
