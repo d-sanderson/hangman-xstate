@@ -26,7 +26,6 @@ const HangmanUI = () => {
   return (
     <div>
       <h1>{state.toStrings()}</h1>
-      <h1>{JSON.stringify(state.context)}</h1>
       <SplineScene state={state} service={service} />
       {state.matches('lose') &&
         <p>the correct word was <strong>{state.context.word}</strong>.</p>
