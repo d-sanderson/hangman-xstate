@@ -3,6 +3,7 @@ export interface HangmanContext {
   guessedLetters: { correct: string, incorrect: string },
   triesRemaining: number
   error: string | null
+  message: string
 }
 
 // USING THIS BREAKS XSTATE VISUALIZATION

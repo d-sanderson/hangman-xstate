@@ -11,6 +11,7 @@ const initialContext: HangmanContext = {
   guessedLetters: { correct: '', incorrect: '' },
   triesRemaining: 7,
   error: null,
+  message: '',
 }
 
 const url = 'https://random-word-api.herokuapp.com/word'
@@ -20,7 +21,7 @@ const fetchRandomWord = async (url: string) => {
 }
 
 const handleTries = (context: HangmanContext, event: { letter: string }) => {
-  if (!context.word.includes(event.letter)) {
+  if (!context.word.includes(event.letter) && !context.guessedLetters.incorrect.includes(event.letter)) {
     return context.triesRemaining - 1
   }
   return context.triesRemaining
@@ -64,7 +65,7 @@ const canSpellWord = (word: string, letters: string) => {
 const handleHasWon = (ctx: HangmanContext) => canSpellWord(ctx.word, ctx.guessedLetters.correct)
 
 export const hangmanMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QAsCGA7KBbDBZVAxsgJbpgB0phALsQG5gDEEA9mZenSwNYUzUAlDKywB1FgCcIAbQAMAXUSgADi1jFabJSAAeiAEwAWAIzlZ+gMyGLAVhsB2IzaMA2ADQgAnohsAOG+TGshb25jYuAJyREfoAvrEeaJg46PhEpBRUBLQMjGASEpLkygA2qNQAZpJY5PxC6CLiUnKKSCCq6pro2noIRqbmVrYOTq4e3gjG9hFmFhGyhi5BvsZ2UfGJGNh4hCTsNPRMuACCANIAogDiAKrnAMp3LdodGsRabb0uweQW+r6yvgixhiFlBEXGiEMERmANBU0cQ18LhsGxASW2qV2GXIB1yTzaLy6PUQgN8Zj+DiCsmCVnBXkQLn0AVkXz+QMsc1kxlR6JSaT2FFxTGkxlaKjUr3eoF6pPJ-nsVJpUIhCBshns5C+hj80PMJmM3ISaK2fKx7AA7qRGAJ7ucACr48WdN7dD6IILA8iLWT2BUGlyhQEq+xLTXGAMhfyGfWGzbJHbpdglNRMG13e2O9oSoluyZcmbe30G8OBukTYbkOz6WQOFwB5zUlFG3kJgXkCqoYglACuElTtodCme2ZdxIQUJc5BD4UM+ns2tsEQcKt8+nIEWnNgivkBAf0AfiRvQLAgcG0LcxibAw+dUt0iAAtO56Qgn2ZqR-Px+HDyTa3sVkOTXgSI53r0s7BhYpguL4oT2FYfzmFMv7xpebZCjekqutKDLzOuFiwYYSJTEs+jGCqLhQZqFhcv8URkdWFgoRi-LYpa2FZreHG9AaVGDFBrg2D6EEvr6ASrqCtZ2I2cTNn+aHYsmsDAU6WFjrxAwcsYgnCfoKp2MyPohsC847pEzGmle7adj2faYTmOEIJEsj4YRxHGWRKoMeQljItWwKLKuCyHrEQA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QAsCGA7KBbDBZVAxsgJbpgB0phALsQG5gDEEA9mZenSwNYUzUAlDKywB1FgCcIAbQAMAXUSgADi1jFabJSAAeiAEwAWAIzlZ+gMyGArBYAc+4wHYL5pwBoQAT0TW7s8jtrQwA2AE47VxCLELtDAF94zzRMHHR8IlIKKgJaBkYwCQlJcmUAG1RqADNJLHJ+IXQRcSk5RSQQVXVNdG09BCNTcytbB2dXfQ9vRGcncmDjcMNDC2c7ENkLROSMbDxCEnYaeiZcAEEAaQBRAHEAVSuAZUe27S6NYi0O-o2Lcgt9HZjIZ9PpNoNDJ4fAhDGE-rJ-E4woY4iEbOFtiAUnt0gcsuRjvlXh13j0+og7BEzICnEZzEE0SEoYgQsY7GZrGFbPowkjDE5zJjsWkMocKISmNJjO0VGoPl9QP1Kez6bTDPTrIzmQhggFfi42TFZKytkksbsRXj2AB3UiMARPK4AFWJsu6n163xmsmMYXIoVkYSD1nGQaZ0wQTms+kCISMDkBQJCwSFFv2mXYZTUTAdj2drs6crJXoQxh9foDQa5obC4ehVj9wS5ISccdBYNNO1S6bF5CqqGIZQArhIc46XQo3kWPeSYbXyK3NTE4TzAxZtUD-Ui2bIQwi7E5KYkzegWBA4NphT2slP3QrdIgALR1p-WchVj+fiIhVPd3EZ7J0AlW95U9RVEBBbU1XIHcNn8TkLC5X8cVFfFgJJad7x+MIAjhOw4lkUI0TCYxrG1OM3zjVsBRbQio2Qy0APIW0wMLO9WP6YxjFWakLGsOiDwNOwoNiMwW3sCxJIsJwnGWBjr0zbMQOLcDS24oZLH4-lBNWYSIybMxd0mYieX0TV5P-Xt+0HEcwGUmcS3CXD7AIojYVI7UwQrOIgl9BEfTiY94iAA */
   createMachine({
   context: initialContext,
   schema: { context: {} as HangmanContext, events: {} as any },

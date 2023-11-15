@@ -1,5 +1,5 @@
 import { useMachine } from '@xstate/react';
-import React from 'react'
+import React, { useEffect } from 'react'
 import { hangmanMachine } from '../machines/hangmanMachine';
 import { ACTIONS } from '../machines/hangmanMachine.types';
 import SplineScene from './SplineScene';
@@ -7,16 +7,27 @@ import SplineScene from './SplineScene';
 
 const HangmanUI = () => {
   const [state, send, service] = useMachine(hangmanMachine, { devTools: true })
-  const handleInput = (e: React.KeyboardEvent<HTMLInputElement>) => send('MAKEGUESS', { letter: e.key })
+
+  useEffect(() => {
+    const handleInput = (e: KeyboardEvent) => {
+      console.log(e.key)
+      send('MAKEGUESS', { letter: e.key })
+    }
+    // Add the event listener when the component mounts
+    window.addEventListener('keydown', e => handleInput(e));
+
+    // Remove the event listener when the component unmounts to avoid memory leaks
+    return () => {
+      window.removeEventListener('keydown', e => handleInput(e));
+    };
+  }, []); // Empty dependency array means this effect runs once, similar to componentDidMount
+
+  
   return (
     <div>
       <h1>{state.toStrings()}</h1>
+      <h1>{JSON.stringify(state.context)}</h1>
       <SplineScene state={state} service={service} />
-      {state.matches('active') &&
-        <input
-          onKeyDown={(e) => handleInput(e)}
-        />
-      }
       {state.matches('lose') &&
         <p>the correct word was <strong>{state.context.word}</strong>.</p>
       }
