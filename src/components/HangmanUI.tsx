@@ -10,7 +10,6 @@ const HangmanUI = () => {
 
   useEffect(() => {
     const handleInput = (e: KeyboardEvent) => {
-      console.log(e.key)
       send('MAKEGUESS', { letter: e.key })
     }
     // Add the event listener when the component mounts
@@ -20,7 +19,7 @@ const HangmanUI = () => {
     return () => {
       window.removeEventListener('keydown', e => handleInput(e));
     };
-  }, []); // Empty dependency array means this effect runs once, similar to componentDidMount
+  }, []);
 
   
   return (
