@@ -34,6 +34,7 @@ const HangmanUI = () => {
           send(ACTIONS.RESET)
         }}>reset</button>
       }
+      <h1 className="wrong">{state.context.guessedLetters.incorrect}</h1>
       {!state.matches('lose') &&
         <h1>{state.context.word
           .split('')
